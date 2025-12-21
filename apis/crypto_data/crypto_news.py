@@ -27,18 +27,17 @@ class CryptoNewsAPI:
     def chk_dir(self):
         os.makedirs(self.log_dir, exist_ok=True)
 
-    def call(self, tickers='btc,eth', limit=1000, start_date=None):
-        # 헤더 인증 방식 유지
+    def call(self, tickers='btc,eth', limit=1000, start_date=None, end_date=None):
         headers = {'Content-Type': 'application/json', 'Authorization': f'Token {self.auth_key}'}
         params = {'tickers': tickers, 'limit': limit}
         
-        # 시작 날짜 파라미터 추가
         if start_date:
             params['startDate'] = start_date
+        if end_date:
+            params['endDate'] = end_date # 과거 데이터를 페이징하기 위해 추가
         
         try:
             rslt = requests.get(self.api_url, headers=headers, params=params)
-            
             try:
                 contents = rslt.json()
             except Exception:
@@ -53,7 +52,6 @@ class CryptoNewsAPI:
 
             self.log.info(f'{self.api_url} 조회 성공, 건수: {len(contents)}')
             return contents
-
         except Exception:
             self.log.error(f'시스템 에러: {traceback.format_exc()}')
             return []
