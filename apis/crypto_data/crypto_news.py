@@ -27,7 +27,6 @@ class CryptoNewsProducer():
         current_date = datetime.strptime('2025-09-01', '%Y-%m-%d')
         
         while True:
-            # 오늘 날짜 확인
             today = datetime.now()
             if current_date > today:
                 self.log.info("모든 과거 데이터 수집 완료. 1시간 대기 모드로 전환합니다.")
@@ -75,7 +74,7 @@ class CryptoNewsProducer():
 
             # 다음 주로 이동
             current_date = next_date
-            time.sleep(10) 
+            time.sleep(5) 
 
 if __name__ == '__main__':
     news_producer = CryptoNewsProducer(topic='apis.crypto.news')
