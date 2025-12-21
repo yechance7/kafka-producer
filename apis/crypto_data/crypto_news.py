@@ -8,8 +8,7 @@ from logging.handlers import TimedRotatingFileHandler
 
 class CryptoNewsAPI:
     def __init__(self):
-        # GitHub Secrets에서 환경변수로 읽어옴
-        self.auth_key = os.getenv('AUTH_KEY_TIINGO')
+        self.auth_key = '##auth_key_tiingo##'
         self.api_url = 'https://api.tiingo.com/tiingo/news'
         self.log_dir = '/log/crypto_api'
         self.chk_dir()
@@ -57,3 +56,9 @@ class CryptoNewsAPI:
         except Exception:
             self.log.error(f'시스템 에러: {traceback.format_exc()}')
             return []
+        
+
+if __name__ == '__main__':
+    api = CryptoNewsAPI()
+    result = api.call()
+    print(result)
