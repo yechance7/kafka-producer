@@ -68,7 +68,7 @@ class CryptoNewsProducer():
 
             # 처리가 끝나면 다음 날짜로 변경 (성공/실패 상관없이 전진)
             current_date = next_date
-            time.sleep(2) # API 속도 제한 방지용 대기
+            time.sleep(10) 
 
 if __name__ == '__main__':
     news_producer = CryptoNewsProducer(topic='apis.crypto.news')
