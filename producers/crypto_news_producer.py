@@ -2,7 +2,7 @@ import time
 import json
 import logging
 from confluent_kafka import Producer
-from apis.seoul_data.crypto_news import CryptoNewsAPI # 파일명에 맞춰 수정
+from apis.crypto_data.crypto_news import CryptoNewsAPI # 파일명에 맞춰 수정
 from datetime import datetime
 
 BROKER_LST = 'kafka01:9092,kafka02:9092,kafka03:9092' # 유지

@@ -20,8 +20,8 @@ jobs:
     
     - name: replace application.yml
       env:
-        AUTH_KEY_SEOUL_DATA: ${{ secrets.AUTH_KEY_SEOUL_DATA }}
-      run: sed -ie "s/##auth_key_seoul_data##/$AUTH_KEY_SEOUL_DATA/g" ./config/application.yml
+        AUTH_KEY_TIINGO: ${{ secrets.AUTH_KEY_TIINGO }}
+      run: sed -ie "s/##auth_key_tiingo##/$AUTH_KEY_TIINGO/g" ./config/application.yml
 
     - name: archive to tar.gz
       run: tar cvfz ./kafka-producer.tar.gz *
