@@ -17,11 +17,6 @@ jobs:
       # uses: 이미 만들어진 action을 사용할 때 사용
       # actions/checkout@4는 본 레파지토리의 내용을 checkout 하여 runner 서버에 저장함
       uses: actions/checkout@v4
-    
-    - name: replace application.yml
-      env:
-        AUTH_KEY_TIINGO: ${{ secrets.AUTH_KEY_TIINGO }}
-      run: sed -ie "s/##auth_key_tiingo##/$AUTH_KEY_TIINGO/g" ./config/application.yml
 
     - name: archive to tar.gz
       run: tar cvfz ./kafka-producer.tar.gz *
