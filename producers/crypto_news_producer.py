@@ -24,8 +24,7 @@ class CryptoNewsProducer():
 
     def produce(self):
         api = CryptoNewsAPI()
-        # 수집 시작일 설정
-        current_date = datetime.strptime('2025-09-09', '%Y-%m-%d')
+        current_date = datetime.strptime('2025-09-01', '%Y-%m-%d')
         
         while True:
             # 수집 대상일 (오늘을 넘어가면 대기)
@@ -35,16 +34,14 @@ class CryptoNewsProducer():
                 continue
 
             start_str = current_date.strftime('%Y-%m-%d')
-            # endDate는 미포함(publishedDate < endDate)이므로 다음날로 설정
             next_date = current_date + timedelta(days=1)
             end_str = next_date.strftime('%Y-%m-%d')
             
             self.log.info(f">>> {start_str} 날짜 데이터 수집 시도...")
             items = api.call(limit=1000, start_date=start_str, end_date=end_str)
             
-            # 해당 날짜에 데이터가 있는 경우만 처리
             if items:
-                for item in reversed(items): # 과거 순서로 전송
+                for item in reversed(items):
                     item['NEWS_ID'] = item.pop('id')
                     item['PUB_DTTM'] = item.pop('publishedDate')
                     item['TITLE'] = item.pop('title')
@@ -66,7 +63,6 @@ class CryptoNewsProducer():
             else:
                 self.log.info(f"SKIP: {start_str} 날짜에 뉴스가 없습니다.")
 
-            # 처리가 끝나면 다음 날짜로 변경 (성공/실패 상관없이 전진)
             current_date = next_date
             time.sleep(10) 
 
