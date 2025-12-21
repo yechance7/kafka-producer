@@ -32,25 +32,19 @@ class CryptoNewsAPI:
         params = {'tickers': tickers, 'limit': limit}
         
         if start_date:
-            params['startDate'] = start_date
+            params['startDate'] = start_date # publishedDate >= startDate
         if end_date:
-            params['endDate'] = end_date # 과거 데이터를 페이징하기 위해 추가
+            params['endDate'] = end_date     # publishedDate < endDate
         
         try:
             rslt = requests.get(self.api_url, headers=headers, params=params)
-            try:
-                contents = rslt.json()
-            except Exception:
-                self.log.error(f'요청 실패, {traceback.format_exc()}')
-                time.sleep(30)
-                return []
-
             if rslt.status_code != 200:
                 self.log.error(f'요청 실패, 에러코드: {rslt.status_code}, 메시지: {rslt.text}')
-                time.sleep(30)
+                time.sleep(10)
                 return []
 
-            self.log.info(f'{self.api_url} 조회 성공, 건수: {len(contents)}')
+            contents = rslt.json()
+            self.log.info(f'[{start_date} ~ {end_date}] 조회 성공, 건수: {len(contents)}')
             return contents
         except Exception:
             self.log.error(f'시스템 에러: {traceback.format_exc()}')
