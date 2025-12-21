@@ -29,13 +29,20 @@ class CryptoNewsProducer():
 
     def produce(self):
         api = CryptoNewsAPI()
+        first_run = True # 초기 대량 수집 확인용 플래그
+
         while True:
             now_dt = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            items = api.call() # 최신 뉴스 100개 호출
+            
+            # 첫 실행 시 지정된 날짜부터 1000개 수집
+            if first_run and self.last_news_id is None:
+                items = api.call(limit=1000, start_date='2025-09-09')
+                first_run = False
+            else:
+                items = api.call(limit=1000) 
             
             new_items = []
             for item in items:
-                # 1. 중복 체크: 이미 처리한 ID를 만나면 루프 중단
                 if self.last_news_id and item['id'] == self.last_news_id:
                     break
                 new_items.append(item)
@@ -45,9 +52,7 @@ class CryptoNewsProducer():
             else:
                 self.log.info(f"새로운 뉴스 {len(new_items)}건 발견! 전송을 시작합니다.")
                 
-                # 2. 역순 정렬: 과거 뉴스부터 브로커에 쌓이도록 함 (선택 사항)
                 for item in reversed(new_items):
-                    # 데이터 전처리
                     item['NEWS_ID'] = item.pop('id')
                     item['PUB_DTTM'] = item.pop('publishedDate')
                     item['TITLE'] = item.pop('title')
@@ -64,7 +69,6 @@ class CryptoNewsProducer():
                             value=json.dumps(item, ensure_ascii=False),
                             on_delivery=self.delivery_callback
                         )
-                        # 마지막 전송 ID 업데이트
                         self.last_news_id = item['NEWS_ID']
                     except BufferError:
                         self.log.error('%% Local producer queue is full: try again\n')
@@ -73,8 +77,8 @@ class CryptoNewsProducer():
                 self.log.info('%% Waiting for %d deliveries\n' % len(self.producer))
                 self.producer.flush()
 
-            # 1분 대기
-            time.sleep(60)
+            # 수집 주기 15초로 단축
+            time.sleep(15)
 
 if __name__ == '__main__':
     news_producer = CryptoNewsProducer(topic='apis.crypto.news')

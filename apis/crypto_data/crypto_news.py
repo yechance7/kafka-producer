@@ -14,7 +14,7 @@ class CryptoNewsAPI:
         self.chk_dir()
         self.log = self._get_logger()
 
-    def _get_logger(self): # 로직 유지
+    def _get_logger(self):
         default_format = '%(asctime)s [%(levelname)s]:%(message)s'
         logging.basicConfig(format=default_format, level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
         formatter = logging.Formatter(default_format)
@@ -24,19 +24,21 @@ class CryptoNewsAPI:
         logger.addHandler(handler)
         return logger
 
-    def chk_dir(self): # 로직 유지
+    def chk_dir(self):
         os.makedirs(self.log_dir, exist_ok=True)
 
-    def call(self, tickers='btc,eth', limit=100):
-        # Tiingo API는 URL 파라미터나 헤더 모두 지원하지만 헤더가 보안상 권장됩니다.
+    def call(self, tickers='btc,eth', limit=1000, start_date=None):
+        # 헤더 인증 방식 유지
         headers = {'Content-Type': 'application/json', 'Authorization': f'Token {self.auth_key}'}
         params = {'tickers': tickers, 'limit': limit}
         
+        # 시작 날짜 파라미터 추가
+        if start_date:
+            params['startDate'] = start_date
+        
         try:
-            # _call_api 로직을 직접 구현
             rslt = requests.get(self.api_url, headers=headers, params=params)
             
-            # JSONDecodeError 처리 로직 계승
             try:
                 contents = rslt.json()
             except Exception:
@@ -44,7 +46,6 @@ class CryptoNewsAPI:
                 time.sleep(30)
                 return []
 
-            # HTTP 상태 코드 체크 (따릉이의 rslt_code 로직 대체)
             if rslt.status_code != 200:
                 self.log.error(f'요청 실패, 에러코드: {rslt.status_code}, 메시지: {rslt.text}')
                 time.sleep(30)
@@ -56,9 +57,3 @@ class CryptoNewsAPI:
         except Exception:
             self.log.error(f'시스템 에러: {traceback.format_exc()}')
             return []
-        
-
-if __name__ == '__main__':
-    api = CryptoNewsAPI()
-    result = api.call()
-    print(result)
