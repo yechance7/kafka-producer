@@ -125,7 +125,7 @@ class CryptoNewsProducer():
                     self.log.info(f"실시간 신규 데이터 {cnt}건 전송 완료.")
             
             self.log.info("3분 대기 후 다음 체크를 진행합니다.")
-            time.sleep(180) # 3분 주기 설정
+            time.sleep(180)
 
 if __name__ == '__main__':
     producer = CryptoNewsProducer(topic='apis.crypto.news')
