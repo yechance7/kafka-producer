@@ -20,7 +20,7 @@ class CryptoNewsProducer():
         self.s3_client = boto3.client('s3', region_name='ap-northeast-2')
         self.sent_ids = set() 
         self._set_logger()
-        self._load_sent_ids() # 시작 시 기존 전송 기록 로드
+        self._load_sent_ids()
 
     def _set_logger(self):
         logging.basicConfig(format='%(asctime)s [%(levelname)s]:%(message)s', level=logging.INFO, datefmt='%Y-%m-%d %H:%M:%S')
