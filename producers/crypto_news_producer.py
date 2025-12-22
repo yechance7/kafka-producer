@@ -84,7 +84,7 @@ class CryptoNewsProducer():
         while True:
             now = datetime.now()
             
-            # 2. 과거 데이터 수집 모드 (9월 1일 ~ 어제)
+            # 2. 과거 데이터 수집 모드 (9월 1일 ~ 어제 )
             if current_date.date() < now.date():
                 start_str = current_date.strftime('%Y-%m-%d')
                 next_date = current_date + timedelta(days=1)
