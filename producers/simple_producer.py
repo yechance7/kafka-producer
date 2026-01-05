@@ -53,5 +53,5 @@ class SimpleProducer:
 
 
 if __name__ == '__main__':
-    simple_producer = SimpleProducer(topic='lesson.ch5-1.simple.producer', duration=60)
+    simple_producer = SimpleProducer(topic='simple.producer', duration=60)
     simple_producer.produce()
